@@ -34,6 +34,9 @@ namespace cuchi_lua_utils_v2
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.pathPickerButton = new System.Windows.Forms.Button();
             this.pathTextBox = new System.Windows.Forms.TextBox();
+            this.logsButton = new System.Windows.Forms.CheckBox();
+            this.logsTextBox = new System.Windows.Forms.RichTextBox();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // appName
@@ -49,9 +52,9 @@ namespace cuchi_lua_utils_v2
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(12, 357);
+            this.startButton.Location = new System.Drawing.Point(13, 212);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(385, 43);
+            this.startButton.Size = new System.Drawing.Size(779, 43);
             this.startButton.TabIndex = 1;
             this.startButton.Text = "START";
             this.startButton.UseVisualStyleBackColor = true;
@@ -75,12 +78,43 @@ namespace cuchi_lua_utils_v2
             this.pathTextBox.Size = new System.Drawing.Size(779, 20);
             this.pathTextBox.TabIndex = 3;
             // 
+            // logsButton
+            // 
+            this.logsButton.AutoSize = true;
+            this.logsButton.Location = new System.Drawing.Point(13, 189);
+            this.logsButton.Name = "logsButton";
+            this.logsButton.Size = new System.Drawing.Size(85, 17);
+            this.logsButton.TabIndex = 4;
+            this.logsButton.Text = "Enable Logs";
+            this.logsButton.UseVisualStyleBackColor = true;
+            this.logsButton.CheckStateChanged += new System.EventHandler(this.logsButton_CheckStateChanged);
+            // 
+            // logsTextBox
+            // 
+            this.logsTextBox.Location = new System.Drawing.Point(13, 261);
+            this.logsTextBox.Name = "logsTextBox";
+            this.logsTextBox.ReadOnly = true;
+            this.logsTextBox.Size = new System.Drawing.Size(779, 163);
+            this.logsTextBox.TabIndex = 6;
+            this.logsTextBox.Text = "";
+            this.logsTextBox.TextChanged += new System.EventHandler(this.logsTextBox_TextChanged);
+            // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(13, 430);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(779, 18);
+            this.progressBar.TabIndex = 7;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(132)))), ((int)(((byte)(220)))));
             this.ClientSize = new System.Drawing.Size(804, 451);
+            this.Controls.Add(this.progressBar);
+            this.Controls.Add(this.logsTextBox);
+            this.Controls.Add(this.logsButton);
             this.Controls.Add(this.pathTextBox);
             this.Controls.Add(this.pathPickerButton);
             this.Controls.Add(this.startButton);
@@ -100,6 +134,9 @@ namespace cuchi_lua_utils_v2
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button pathPickerButton;
         private System.Windows.Forms.TextBox pathTextBox;
+        private System.Windows.Forms.CheckBox logsButton;
+        private System.Windows.Forms.RichTextBox logsTextBox;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
 

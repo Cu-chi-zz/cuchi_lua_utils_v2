@@ -14,244 +14,16 @@ namespace cuchi_lua_utils_v2
 {
     public partial class Form1 : Form
     {
-        private string pathToEdit = "";
+        private static string pathToEdit = "";
+        private static bool logsEnabled = false;
 
         public Form1()
         {
             InitializeComponent();
         }
 
-        private static void Lock()
+        private static void EventsReplacer()
         {
-            Console.Clear();
-            Console.ResetColor();
-
-            Console.WriteLine("Welcome!\n\n");
-
-            Console.WriteLine("Specify a path");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            string pathEntered = Console.ReadLine();
-            Console.ResetColor();
-
-            if (!Directory.Exists(pathEntered))
-            {
-                OnBadArgument("Please, choose a working path! Press a key to retry.");
-                return;
-            }
-
-            bool logs = false;
-            Console.WriteLine("Enable logs: y/n");
-            string enableLogs = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(enableLogs) || enableLogs != "y" && enableLogs != "n")
-            {
-                OnBadArgument("Please, choose yes (y) or no (n)! Press a key to retry.");
-                return;
-            }
-            else
-            {
-                if (enableLogs == "y")
-                {
-                    logs = true;
-                }
-            }
-
-            Console.Clear();
-            try
-            {
-                Stopwatch watchFolder = new Stopwatch();
-                watchFolder.Start();
-
-                int filesCounter = 0;
-                int linesCounter = 0;
-                int totalLinesSkipped = 0;
-                int totalLinesReplaced = 0;
-
-                bool directoryExist = true;
-                int iDir = 1;
-                while (directoryExist)
-                {
-                    if (!Directory.Exists($@".\backups-{iDir}\"))
-                    {
-                        Directory.CreateDirectory($@".\backups-{iDir}\");
-                        directoryExist = false;
-                        break;
-                    }
-                    iDir++;
-                }
-
-                if (logs)
-                {
-                    Stopwatch watchSave = new Stopwatch();
-                    watchSave.Start();
-                    var dirInfos = new DirectoryInfo(pathEntered);
-                    Console.WriteLine($"Saving {dirInfos.Name} to backups-{iDir}...");
-                    DirectoryCopy(pathEntered, $@".\backups-{iDir}\", true);
-                    watchSave.Stop();
-                    Console.WriteLine($"Saved to backups-{iDir}: took {Math.Round(watchSave.Elapsed.TotalSeconds, 2)} seconds");
-                }
-                else
-                {
-                    DirectoryCopy(pathEntered, $@".\backups-{iDir}\", true);
-                }
-
-                string[] path = Directory.GetFiles(pathEntered, "*.lua", SearchOption.AllDirectories);
-
-                int percentage = 0;
-
-                foreach (string file in path)
-                {
-                    if (!logs)
-                    {
-                        Console.Clear();
-                        percentage = (filesCounter / path.Length) * 100;
-                        Console.WriteLine($"Processing: {percentage}%");
-                    }
-
-                    var currentFile = new FileInfo(file);
-
-                    Stopwatch watchFile = new Stopwatch();
-                    if (logs)
-                    {
-                        Console.WriteLine($"File: {currentFile.Name}");
-                        watchFile.Start();
-                    }
-
-                    string[] lines = File.ReadAllLines(file);
-                    if (lines.Length > 0)
-                    {
-                        linesCounter += lines.Length;
-                        using (StreamWriter f = new StreamWriter($@"{file}"))
-                        {
-                            for (int currLine = 0; currLine < lines.Length; currLine++)
-                            {
-                                if (!lines[currLine].StartsWith("--"))
-                                {
-                                    if (lines[currLine].Contains("AddEventHandler(") || lines[currLine].Contains("RegisterNetEvent(") || lines[currLine].Contains("TriggerServerEvent(") || lines[currLine].Contains("TriggerClientEvent(") || lines[currLine].Contains("TriggerEvent(") || lines[currLine].Contains("RegisterServerEvent("))
-                                    {
-                                        string[] linesSp = { };
-                                        if (lines[currLine].Contains('"') && !lines[currLine].Contains('\''))
-                                        {
-                                            linesSp = lines[currLine].Split('"');
-                                        }
-                                        else if (lines[currLine].Contains('\'') && !lines[currLine].Contains('"'))
-                                        {
-                                            linesSp = lines[currLine].Split('\'');
-                                        }
-                                        else
-                                        {
-                                            if (FindFirstCharContainsString(lines[currLine]) == "\"")
-                                            {
-                                                linesSp = lines[currLine].Split('"');
-                                            }
-                                            else if (FindFirstCharContainsString(lines[currLine]) == "\'")
-                                            {
-                                                linesSp = lines[currLine].Split('\'');
-                                            }
-                                            else if (FindFirstCharContainsString(lines[currLine]) == "unfinded" && logs)
-                                            {
-                                                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                                                Console.WriteLine($"{currLine + 1}: skipped event. ({lines[currLine]})");
-                                                Console.ResetColor();
-                                            }
-                                        }
-
-                                        try
-                                        {
-                                            string nameOfEvent = linesSp[1];
-                                            if (!IsFivemEvent(nameOfEvent))
-                                            {
-                                                lines[currLine] = lines[currLine].Replace(nameOfEvent, Base64Encode(nameOfEvent));
-                                                totalLinesReplaced++;
-                                            }
-                                            else
-                                            {
-                                                totalLinesSkipped++;
-                                                if (logs)
-                                                {
-                                                    Console.ForegroundColor = ConsoleColor.Magenta;
-                                                    Console.WriteLine($"{currLine + 1}: skipped event (FiveM event).");
-                                                    Console.ResetColor();
-                                                }
-                                            }
-                                        }
-                                        catch (IndexOutOfRangeException)
-                                        {
-                                            totalLinesSkipped++;
-                                            if (logs)
-                                            {
-                                                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                                                Console.WriteLine($"{currLine + 1}: skipped event (out of range). ({lines[currLine]})");
-                                                Console.ResetColor();
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Console.WriteLine(ex);
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-                            filesCounter++;
-                        }
-
-                        File.WriteAllLines(file, lines);
-                        if (logs)
-                        {
-                            watchFile.Stop();
-                            if (watchFile.Elapsed.TotalMilliseconds > 1000)
-                            {
-                                Console.ForegroundColor = ConsoleColor.Yellow;
-                                Console.WriteLine($"Replaced for {currentFile.Name}\nProcess (replaced {lines.Length} lines) took: {Math.Round(watchFile.Elapsed.TotalSeconds, 5)} seconds");
-                                Console.ResetColor();
-                            }
-                            else if (watchFile.Elapsed.TotalMilliseconds > 5000)
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine($"Replaced for {currentFile.Name}\nProcess (replaced {lines.Length} lines) took: {Math.Round(watchFile.Elapsed.TotalSeconds, 5)} seconds");
-                                Console.ResetColor();
-                            }
-                            else if (watchFile.Elapsed.TotalMilliseconds < 200)
-                            {
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine($"Replaced for {currentFile.Name}\nProcess (replaced {lines.Length} lines) took: {Math.Round(watchFile.Elapsed.TotalSeconds, 5)} seconds");
-                                Console.ResetColor();
-                            }
-                            else
-                            {
-                                Console.ResetColor();
-                                Console.WriteLine($"Replaced for {currentFile.Name}\nProcess (replaced {lines.Length} lines) took: {Math.Round(watchFile.Elapsed.TotalSeconds, 5)} seconds");
-                            }
-                        }
-                    }
-                }
-                watchFolder.Stop();
-                Console.WriteLine($"--------------------------------------------------------------");
-                Console.WriteLine($"Process took: {Math.Round(watchFolder.Elapsed.TotalSeconds, 2)} seconds");
-                Console.WriteLine($"Total files: {filesCounter}");
-                Console.WriteLine($"Total lines: {linesCounter}");
-                Console.WriteLine($"Total lines skipped: {totalLinesSkipped}");
-                Console.WriteLine($"Total lines replaced: {totalLinesReplaced}");
-                Console.WriteLine($"--------------------------------------------------------------");
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                OnBadArgument($"Error, can't access to {pathEntered}.\n{ex}");
-                return;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return;
-            }
-        }
-
-        private static void OnBadArgument(string errorMessage)
-        {
-            Console.WriteLine(errorMessage);
-            Console.ReadKey();
-            Lock();
         }
 
         public static string Base64Encode(string plainText)
@@ -380,7 +152,174 @@ namespace cuchi_lua_utils_v2
         {
             if (string.IsNullOrEmpty(pathToEdit))
             {
-                MessageBox.Show("Please, select a folder to edit!", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Please, select a folder to edit!", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                Stopwatch watchFolder = new Stopwatch();
+                watchFolder.Start();
+
+                int filesCounter = 0;
+                int linesCounter = 0;
+                int totalLinesSkipped = 0;
+                int totalLinesReplaced = 0;
+
+                bool directoryExist = true;
+                int iDir = 1;
+                while (directoryExist)
+                {
+                    if (!Directory.Exists($@".\backups-{iDir}\"))
+                    {
+                        Directory.CreateDirectory($@".\backups-{iDir}\");
+                        directoryExist = false;
+                        break;
+                    }
+                    iDir++;
+                }
+
+                if (logsEnabled)
+                {
+                    Stopwatch watchSave = new Stopwatch();
+                    watchSave.Start();
+                    var dirInfos = new DirectoryInfo(pathToEdit);
+                    logsTextBox.Text += $"Saving {dirInfos.Name} to backups-{iDir}...\n";
+                    DirectoryCopy(pathToEdit, $@".\backups-{iDir}\", true);
+                    watchSave.Stop();
+                    logsTextBox.Text += $"Saved to backups-{iDir}: took {Math.Round(watchSave.Elapsed.TotalSeconds, 2)} seconds\n";
+                }
+                else
+                {
+                    DirectoryCopy(pathToEdit, $@".\backups-{iDir}\", true);
+                }
+
+                string[] path = Directory.GetFiles(pathToEdit, "*.lua", SearchOption.AllDirectories);
+
+                int percentage = 0;
+
+                progressBar.Maximum = path.Length;
+
+                foreach (string file in path)
+                {
+                    if (!logsEnabled)
+                    {
+                        progressBar.Value = filesCounter;
+                    }
+
+                    var currentFile = new FileInfo(file);
+
+                    Stopwatch watchFile = new Stopwatch();
+                    if (logsEnabled)
+                    {
+                        logsTextBox.Text += $"File: {currentFile.Name}\n";
+                        watchFile.Start();
+                    }
+
+                    string[] lines = File.ReadAllLines(file);
+                    if (lines.Length > 0)
+                    {
+                        linesCounter += lines.Length;
+                        using (StreamWriter f = new StreamWriter($@"{file}"))
+                        {
+                            for (int currLine = 0; currLine < lines.Length; currLine++)
+                            {
+                                if (!lines[currLine].StartsWith("--"))
+                                {
+                                    if (lines[currLine].Contains("AddEventHandler(") || lines[currLine].Contains("RegisterNetEvent(") || lines[currLine].Contains("TriggerServerEvent(") || lines[currLine].Contains("TriggerClientEvent(") || lines[currLine].Contains("TriggerEvent(") || lines[currLine].Contains("RegisterServerEvent("))
+                                    {
+                                        string[] linesSp = { };
+                                        if (lines[currLine].Contains('"') && !lines[currLine].Contains('\''))
+                                        {
+                                            linesSp = lines[currLine].Split('"');
+                                        }
+                                        else if (lines[currLine].Contains('\'') && !lines[currLine].Contains('"'))
+                                        {
+                                            linesSp = lines[currLine].Split('\'');
+                                        }
+                                        else
+                                        {
+                                            if (FindFirstCharContainsString(lines[currLine]) == "\"")
+                                            {
+                                                linesSp = lines[currLine].Split('"');
+                                            }
+                                            else if (FindFirstCharContainsString(lines[currLine]) == "\'")
+                                            {
+                                                linesSp = lines[currLine].Split('\'');
+                                            }
+                                            else if (FindFirstCharContainsString(lines[currLine]) == "unfinded" && logsEnabled)
+                                            {
+                                                logsTextBox.Text += $"{currLine + 1}: skipped event. ({lines[currLine]})\n";
+                                            }
+                                        }
+
+                                        try
+                                        {
+                                            string nameOfEvent = linesSp[1];
+                                            if (!IsFivemEvent(nameOfEvent))
+                                            {
+                                                lines[currLine] = lines[currLine].Replace(nameOfEvent, Base64Encode(nameOfEvent));
+                                                totalLinesReplaced++;
+                                            }
+                                            else
+                                            {
+                                                totalLinesSkipped++;
+                                                if (logsEnabled)
+                                                {
+                                                    logsTextBox.Text += $"{currLine + 1}: skipped event (FiveM event).\n";
+                                                }
+                                            }
+                                        }
+                                        catch (IndexOutOfRangeException)
+                                        {
+                                            totalLinesSkipped++;
+                                            if (logsEnabled)
+                                            {
+                                                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                                                logsTextBox.Text += $"{currLine + 1}: skipped event (out of range). ({lines[currLine]})\n";
+                                                Console.ResetColor();
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine(ex);
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            filesCounter++;
+                        }
+
+                        File.WriteAllLines(file, lines);
+                        if (logsEnabled)
+                        {
+                            watchFile.Stop();
+                            logsTextBox.Text += $"Replaced for {currentFile.Name}\nProcess (replaced {lines.Length} lines) took: {Math.Round(watchFile.Elapsed.TotalSeconds, 5)} seconds\n";
+                        }
+                    }
+                    progressBar.Refresh();
+                    logsTextBox.Refresh();
+                }
+                watchFolder.Stop();
+                progressBar.Value = progressBar.Maximum;
+                logsTextBox.Text += $"--------------------------------------------------------------\n";
+                logsTextBox.Text += $"Process took: {Math.Round(watchFolder.Elapsed.TotalSeconds, 2)} seconds\n";
+                logsTextBox.Text += $"Total files: {filesCounter}\n";
+                logsTextBox.Text += $"Total lines: {linesCounter}\n";
+                logsTextBox.Text += $"Total lines skipped: {totalLinesSkipped}\n";
+                logsTextBox.Text += $"Total lines replaced: {totalLinesReplaced}\n";
+                logsTextBox.Text += $"Total lines replaced: {logsTextBox.Lines.Length}\n";
+                logsTextBox.Text += $"--------------------------------------------------------------\n";
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                MessageBox.Show($"{ex}", "ERROR: UnauthorizedAccessException", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex}", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
         }
@@ -389,13 +328,31 @@ namespace cuchi_lua_utils_v2
         {
             FolderBrowserDialog folderDlg = new FolderBrowserDialog();
             folderDlg.ShowNewFolderButton = true;
-            // Show the FolderBrowserDialog.
+
             DialogResult result = folderDlg.ShowDialog();
             if (result == DialogResult.OK)
             {
                 pathTextBox.Text = folderDlg.SelectedPath;
                 pathToEdit = folderDlg.SelectedPath;
             }
+        }
+
+        private void logsButton_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (logsButton.CheckState == CheckState.Checked)
+            {
+                logsEnabled = true;
+            }
+            else
+            {
+                logsEnabled = false;
+            }
+        }
+
+        private void logsTextBox_TextChanged(object sender, EventArgs e)
+        {
+            logsTextBox.SelectionStart = logsTextBox.Text.Length;
+            logsTextBox.ScrollToCaret();
         }
     }
 }
