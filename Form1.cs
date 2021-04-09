@@ -14,12 +14,14 @@ namespace cuchi_lua_utils_v2
 {
     public partial class Form1 : Form
     {
+        private string pathToEdit = "";
+
         public Form1()
         {
             InitializeComponent();
         }
 
-        private static void Main()
+        private static void Lock()
         {
             Console.Clear();
             Console.ResetColor();
@@ -249,7 +251,7 @@ namespace cuchi_lua_utils_v2
         {
             Console.WriteLine(errorMessage);
             Console.ReadKey();
-            Main();
+            Lock();
         }
 
         public static string Base64Encode(string plainText)
@@ -368,6 +370,32 @@ namespace cuchi_lua_utils_v2
             }
 
             return false;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+        }
+
+        private void startButton_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(pathToEdit))
+            {
+                MessageBox.Show("Please, select a folder to edit!", "Error", MessageBoxButtons.OK);
+                return;
+            }
+        }
+
+        private void pathPickerButton_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderDlg = new FolderBrowserDialog();
+            folderDlg.ShowNewFolderButton = true;
+            // Show the FolderBrowserDialog.
+            DialogResult result = folderDlg.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                pathTextBox.Text = folderDlg.SelectedPath;
+                pathToEdit = folderDlg.SelectedPath;
+            }
         }
     }
 }
