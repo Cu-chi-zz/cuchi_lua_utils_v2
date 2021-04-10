@@ -53,29 +53,42 @@ namespace cuchi_lua_utils_v2
             // 
             // startButton
             // 
+            this.startButton.BackColor = System.Drawing.Color.White;
+            this.startButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.startButton.FlatAppearance.BorderSize = 2;
+            this.startButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.startButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.startButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.startButton.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.startButton.Location = new System.Drawing.Point(13, 188);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(779, 43);
             this.startButton.TabIndex = 1;
             this.startButton.Text = "START";
-            this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.UseVisualStyleBackColor = false;
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
             // pathPickerButton
             // 
+            this.pathPickerButton.BackColor = System.Drawing.Color.White;
+            this.pathPickerButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.pathPickerButton.FlatAppearance.BorderSize = 2;
+            this.pathPickerButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.pathPickerButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.pathPickerButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.pathPickerButton.Font = new System.Drawing.Font("Verdana", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pathPickerButton.Location = new System.Drawing.Point(12, 139);
             this.pathPickerButton.Name = "pathPickerButton";
             this.pathPickerButton.Size = new System.Drawing.Size(780, 43);
             this.pathPickerButton.TabIndex = 2;
             this.pathPickerButton.Text = "SELECT FOLDER";
-            this.pathPickerButton.UseVisualStyleBackColor = true;
+            this.pathPickerButton.UseVisualStyleBackColor = false;
             this.pathPickerButton.Click += new System.EventHandler(this.pathPickerButton_Click);
             // 
             // pathTextBox
             // 
             this.pathTextBox.Location = new System.Drawing.Point(13, 113);
             this.pathTextBox.Name = "pathTextBox";
-            this.pathTextBox.ReadOnly = true;
             this.pathTextBox.Size = new System.Drawing.Size(779, 20);
             this.pathTextBox.TabIndex = 3;
             // 
