@@ -12,12 +12,12 @@ using System.Windows.Forms;
 
 namespace cuchi_lua_utils_v2
 {
-    public partial class Form1 : Form
+    public partial class App : Form
     {
         private static string pathToEdit = "";
         private static bool logsEnabled = false;
 
-        public Form1()
+        public App()
         {
             InitializeComponent();
         }

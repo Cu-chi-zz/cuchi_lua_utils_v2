@@ -1,7 +1,7 @@
 ﻿
 namespace cuchi_lua_utils_v2
 {
-    partial class Form1
+    partial class App
     {
         /// <summary>
         /// Variable nécessaire au concepteur.
