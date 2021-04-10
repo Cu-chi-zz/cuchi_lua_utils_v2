@@ -156,6 +156,15 @@ namespace cuchi_lua_utils_v2
                 return;
             }
 
+            var worker = new BackgroundWorker();
+            // Création d'une instance qui execute la methodes "filesCreateor" a son demarrage
+            worker.DoWork += new DoWorkEventHandler(EventsChanger);
+            // Exectution de la fonctions filesCreator en mode asynchronisé
+            worker.RunWorkerAsync();
+        }
+
+        private void EventsChanger(object sender, EventArgs e)
+        {
             try
             {
                 Stopwatch watchFolder = new Stopwatch();
@@ -184,10 +193,10 @@ namespace cuchi_lua_utils_v2
                     Stopwatch watchSave = new Stopwatch();
                     watchSave.Start();
                     var dirInfos = new DirectoryInfo(pathToEdit);
-                    logsTextBox.Text += $"Saving {dirInfos.Name} to backups-{iDir}...\n";
+                    logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Saving {dirInfos.Name} to backups-{iDir}...\n"));
                     DirectoryCopy(pathToEdit, $@".\backups-{iDir}\", true);
                     watchSave.Stop();
-                    logsTextBox.Text += $"Saved to backups-{iDir}: took {Math.Round(watchSave.Elapsed.TotalSeconds, 2)} seconds\n";
+                    logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Saved to backups-{iDir}: took {Math.Round(watchSave.Elapsed.TotalSeconds, 2)} seconds\n"));
                 }
                 else
                 {
@@ -196,23 +205,19 @@ namespace cuchi_lua_utils_v2
 
                 string[] path = Directory.GetFiles(pathToEdit, "*.lua", SearchOption.AllDirectories);
 
-                int percentage = 0;
-
-                progressBar.Maximum = path.Length;
+                progressBar.Invoke(new Action(() => progressBar.Maximum = path.Length));
 
                 foreach (string file in path)
                 {
-                    if (!logsEnabled)
-                    {
-                        progressBar.Value = filesCounter;
-                    }
+                    progressBar.Invoke(new Action(() => progressBar.Value = filesCounter));
+                    double percent = filesCounter / path.Length * 100;
 
                     var currentFile = new FileInfo(file);
 
                     Stopwatch watchFile = new Stopwatch();
                     if (logsEnabled)
                     {
-                        logsTextBox.Text += $"File: {currentFile.Name}\n";
+                        logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"File: {currentFile.Name}\n"));
                         watchFile.Start();
                     }
 
@@ -249,7 +254,7 @@ namespace cuchi_lua_utils_v2
                                             }
                                             else if (FindFirstCharContainsString(lines[currLine]) == "unfinded" && logsEnabled)
                                             {
-                                                logsTextBox.Text += $"{currLine + 1}: skipped event. ({lines[currLine]})\n";
+                                                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"{currLine + 1}: skipped event. ({lines[currLine]})\n"));
                                             }
                                         }
 
@@ -266,7 +271,7 @@ namespace cuchi_lua_utils_v2
                                                 totalLinesSkipped++;
                                                 if (logsEnabled)
                                                 {
-                                                    logsTextBox.Text += $"{currLine + 1}: skipped event (FiveM event).\n";
+                                                    logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"{currLine + 1}: skipped event (FiveM event).\n"));
                                                 }
                                             }
                                         }
@@ -276,7 +281,7 @@ namespace cuchi_lua_utils_v2
                                             if (logsEnabled)
                                             {
                                                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                                                logsTextBox.Text += $"{currLine + 1}: skipped event (out of range). ({lines[currLine]})\n";
+                                                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"{currLine + 1}: skipped event (out of range). ({lines[currLine]})\n"));
                                                 Console.ResetColor();
                                             }
                                         }
@@ -295,22 +300,24 @@ namespace cuchi_lua_utils_v2
                         if (logsEnabled)
                         {
                             watchFile.Stop();
-                            logsTextBox.Text += $"Replaced for {currentFile.Name}\nProcess (replaced {lines.Length} lines) took: {Math.Round(watchFile.Elapsed.TotalSeconds, 5)} seconds\n";
+                            logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Replaced for {currentFile.Name}\nProcess (replaced {lines.Length} lines) took: {Math.Round(watchFile.Elapsed.TotalSeconds, 5)} seconds\n"));
                         }
                     }
-                    progressBar.Refresh();
-                    logsTextBox.Refresh();
+                    progressBar.Invoke(new Action(() => progressBar.Refresh()));
+                    percentLabel.Invoke(new Action(() => percentLabel.Text = $"{Math.Round(percent, 2)}%"));
+                    logsTextBox.Invoke(new Action(() => logsTextBox.Refresh()));
                 }
                 watchFolder.Stop();
-                progressBar.Value = progressBar.Maximum;
-                logsTextBox.Text += $"--------------------------------------------------------------\n";
-                logsTextBox.Text += $"Process took: {Math.Round(watchFolder.Elapsed.TotalSeconds, 2)} seconds\n";
-                logsTextBox.Text += $"Total files: {filesCounter}\n";
-                logsTextBox.Text += $"Total lines: {linesCounter}\n";
-                logsTextBox.Text += $"Total lines skipped: {totalLinesSkipped}\n";
-                logsTextBox.Text += $"Total lines replaced: {totalLinesReplaced}\n";
-                logsTextBox.Text += $"Total lines replaced: {logsTextBox.Lines.Length}\n";
-                logsTextBox.Text += $"--------------------------------------------------------------\n";
+
+                progressBar.Invoke(new Action(() => progressBar.Value = progressBar.Maximum));
+                percentLabel.Invoke(new Action(() => percentLabel.Text = $"100.00%"));
+                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"--------------------------------------------------------------\n"));
+                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Process took: {Math.Round(watchFolder.Elapsed.TotalSeconds, 2)} seconds\n"));
+                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Total files: {filesCounter}\n"));
+                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Total lines: {linesCounter}\n"));
+                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Total lines skipped: {totalLinesSkipped}\n"));
+                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Total lines replaced: {totalLinesReplaced}\n"));
+                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"--------------------------------------------------------------\n"));
             }
             catch (UnauthorizedAccessException ex)
             {

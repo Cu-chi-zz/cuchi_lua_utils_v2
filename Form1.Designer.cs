@@ -37,6 +37,7 @@ namespace cuchi_lua_utils_v2
             this.logsButton = new System.Windows.Forms.CheckBox();
             this.logsTextBox = new System.Windows.Forms.RichTextBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.percentLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // appName
@@ -52,7 +53,7 @@ namespace cuchi_lua_utils_v2
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(13, 212);
+            this.startButton.Location = new System.Drawing.Point(13, 188);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(779, 43);
             this.startButton.TabIndex = 1;
@@ -81,7 +82,7 @@ namespace cuchi_lua_utils_v2
             // logsButton
             // 
             this.logsButton.AutoSize = true;
-            this.logsButton.Location = new System.Drawing.Point(13, 189);
+            this.logsButton.Location = new System.Drawing.Point(12, 407);
             this.logsButton.Name = "logsButton";
             this.logsButton.Size = new System.Drawing.Size(85, 17);
             this.logsButton.TabIndex = 4;
@@ -91,10 +92,10 @@ namespace cuchi_lua_utils_v2
             // 
             // logsTextBox
             // 
-            this.logsTextBox.Location = new System.Drawing.Point(13, 261);
+            this.logsTextBox.Location = new System.Drawing.Point(13, 237);
             this.logsTextBox.Name = "logsTextBox";
             this.logsTextBox.ReadOnly = true;
-            this.logsTextBox.Size = new System.Drawing.Size(779, 163);
+            this.logsTextBox.Size = new System.Drawing.Size(779, 164);
             this.logsTextBox.TabIndex = 6;
             this.logsTextBox.Text = "";
             this.logsTextBox.TextChanged += new System.EventHandler(this.logsTextBox_TextChanged);
@@ -106,12 +107,26 @@ namespace cuchi_lua_utils_v2
             this.progressBar.Size = new System.Drawing.Size(779, 18);
             this.progressBar.TabIndex = 7;
             // 
+            // percentLabel
+            // 
+            this.percentLabel.AutoSize = true;
+            this.percentLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.percentLabel.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.percentLabel.Location = new System.Drawing.Point(742, 407);
+            this.percentLabel.Name = "percentLabel";
+            this.percentLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.percentLabel.Size = new System.Drawing.Size(54, 20);
+            this.percentLabel.TabIndex = 8;
+            this.percentLabel.Text = "0.00%";
+            this.percentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(132)))), ((int)(((byte)(220)))));
             this.ClientSize = new System.Drawing.Size(804, 451);
+            this.Controls.Add(this.percentLabel);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.logsTextBox);
             this.Controls.Add(this.logsButton);
@@ -137,6 +152,7 @@ namespace cuchi_lua_utils_v2
         private System.Windows.Forms.CheckBox logsButton;
         private System.Windows.Forms.RichTextBox logsTextBox;
         private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Label percentLabel;
     }
 }
 
