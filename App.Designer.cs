@@ -29,6 +29,7 @@ namespace cuchi_lua_utils_v2
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(App));
             this.appName = new System.Windows.Forms.Label();
             this.startButton = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
@@ -160,6 +161,7 @@ namespace cuchi_lua_utils_v2
             this.Controls.Add(this.pathPickerButton);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.appName);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "App";
             this.Text = "Cuchi Lua Utils V2";
             this.Load += new System.EventHandler(this.Form1_Load);
