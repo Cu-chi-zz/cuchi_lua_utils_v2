@@ -183,14 +183,12 @@ namespace cuchi_lua_utils_v2
                 int totalLinesSkipped = 0;
                 int totalLinesReplaced = 0;
 
-                bool directoryExist = true;
                 int iDir = 1;
-                while (directoryExist)
+                while (true)
                 {
-                    if (!Directory.Exists($@".\backups-{iDir}\"))
+                    if (!Directory.Exists($@".\backups\backup-{iDir}\"))
                     {
-                        Directory.CreateDirectory($@".\backups-{iDir}\");
-                        directoryExist = false;
+                        Directory.CreateDirectory($@".\backups\backup-{iDir}\");
                         break;
                     }
                     iDir++;
@@ -202,13 +200,13 @@ namespace cuchi_lua_utils_v2
                     watchSave.Start();
                     var dirInfos = new DirectoryInfo(pathToEdit);
                     logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Saving {dirInfos.Name} to backups-{iDir}...\n"));
-                    DirectoryCopy(pathToEdit, $@".\backups-{iDir}\", true);
+                    DirectoryCopy(pathToEdit, $@".\backups\backup-{iDir}\", true);
                     watchSave.Stop();
                     logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Saved to backups-{iDir}: took {Math.Round(watchSave.Elapsed.TotalSeconds, 2)} seconds\n"));
                 }
                 else
                 {
-                    DirectoryCopy(pathToEdit, $@".\backups-{iDir}\", true);
+                    DirectoryCopy(pathToEdit, $@".\backups\backup-{iDir}\", true);
                 }
 
                 string[] path = Directory.GetFiles(pathToEdit, "*.lua", SearchOption.AllDirectories);
@@ -352,14 +350,12 @@ namespace cuchi_lua_utils_v2
                     Directory.CreateDirectory(@".\logs\");
                 }
 
-                bool logsFileExist = true;
                 int iFil = 1;
-                while (logsFileExist)
+                while (true)
                 {
                     if (!File.Exists($@".\logs\logs-{iFil}.log"))
                     {
-                        File.AppendAllText($@".\logs\logs-{iFil}.log", logsFileText);
-                        logsFileExist = false;
+                        File.WriteAllText($@".\logs\logs-{iFil}.log", logsFileText);
                         break;
                     }
                     iFil++;
