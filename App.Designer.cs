@@ -38,6 +38,7 @@ namespace cuchi_lua_utils_v2
             this.logsTextBox = new System.Windows.Forms.RichTextBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.percentLabel = new System.Windows.Forms.Label();
+            this.saveLogsCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // appName
@@ -122,23 +123,35 @@ namespace cuchi_lua_utils_v2
             // 
             // percentLabel
             // 
+            this.percentLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.percentLabel.AutoSize = true;
             this.percentLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.percentLabel.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.percentLabel.Location = new System.Drawing.Point(742, 407);
+            this.percentLabel.Location = new System.Drawing.Point(760, 404);
             this.percentLabel.Name = "percentLabel";
             this.percentLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.percentLabel.Size = new System.Drawing.Size(54, 20);
+            this.percentLabel.Size = new System.Drawing.Size(32, 20);
             this.percentLabel.TabIndex = 8;
-            this.percentLabel.Text = "0.00%";
+            this.percentLabel.Text = "0%";
             this.percentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // Form1
+            // saveLogsCheckBox
+            // 
+            this.saveLogsCheckBox.AutoSize = true;
+            this.saveLogsCheckBox.Location = new System.Drawing.Point(103, 407);
+            this.saveLogsCheckBox.Name = "saveLogsCheckBox";
+            this.saveLogsCheckBox.Size = new System.Drawing.Size(77, 17);
+            this.saveLogsCheckBox.TabIndex = 9;
+            this.saveLogsCheckBox.Text = "Save Logs";
+            this.saveLogsCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // App
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(132)))), ((int)(((byte)(220)))));
             this.ClientSize = new System.Drawing.Size(804, 451);
+            this.Controls.Add(this.saveLogsCheckBox);
             this.Controls.Add(this.percentLabel);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.logsTextBox);
@@ -147,7 +160,7 @@ namespace cuchi_lua_utils_v2
             this.Controls.Add(this.pathPickerButton);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.appName);
-            this.Name = "Form1";
+            this.Name = "App";
             this.Text = "Cuchi Lua Utils V2";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
@@ -166,6 +179,7 @@ namespace cuchi_lua_utils_v2
         private System.Windows.Forms.RichTextBox logsTextBox;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label percentLabel;
+        private System.Windows.Forms.CheckBox saveLogsCheckBox;
     }
 }
 

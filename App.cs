@@ -15,6 +15,7 @@ namespace cuchi_lua_utils_v2
     public partial class App : Form
     {
         private static string pathToEdit = "";
+        private static string logsFileText = "";
         private static bool logsEnabled = false;
 
         public App()
@@ -156,11 +157,18 @@ namespace cuchi_lua_utils_v2
                 return;
             }
 
+            ResetOnNewStart();
+
             var worker = new BackgroundWorker();
-            // Création d'une instance qui execute la methodes "filesCreateor" a son demarrage
             worker.DoWork += new DoWorkEventHandler(EventsChanger);
-            // Exectution de la fonctions filesCreator en mode asynchronisé
             worker.RunWorkerAsync();
+        }
+
+        private void ResetOnNewStart()
+        {
+            logsTextBox.Text = "";
+            progressBar.Value = 0;
+            percentLabel.Text = "0%";
         }
 
         private void EventsChanger(object sender, EventArgs e)
@@ -309,13 +317,19 @@ namespace cuchi_lua_utils_v2
 
                 progressBar.Invoke(new Action(() => progressBar.Value = progressBar.Maximum));
                 percentLabel.Invoke(new Action(() => percentLabel.Text = $"100.00%"));
-                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"--------------------------------------------------------------\n"));
-                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Process took: {Math.Round(watchFolder.Elapsed.TotalSeconds, 2)} seconds\n"));
-                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Total files: {filesCounter}\n"));
-                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Total lines: {linesCounter}\n"));
-                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Total lines skipped: {totalLinesSkipped}\n"));
-                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"Total lines replaced: {totalLinesReplaced}\n"));
-                logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"--------------------------------------------------------------\n"));
+                logsTextBox.Invoke(new Action(() =>
+                {
+                    logsTextBox.Text += $"--------------------------------------------------------------\n";
+                    logsTextBox.Text += $"Process took: {Math.Round(watchFolder.Elapsed.TotalSeconds, 2)} seconds\n";
+                    logsTextBox.Text += $"Total files: {filesCounter}\n";
+                    logsTextBox.Text += $"Total lines: {linesCounter}\n";
+                    logsTextBox.Text += $"Total lines skipped: {totalLinesSkipped}\n";
+                    logsTextBox.Text += $"Total lines replaced: {totalLinesReplaced}\n";
+                    logsTextBox.Text += $"Total lines replaced: {totalLinesReplaced}\n";
+                    logsTextBox.Text += $"--------------------------------------------------------------\n";
+                    logsFileText = logsTextBox.Text;
+                    LogsCreator();
+                }));
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -326,6 +340,30 @@ namespace cuchi_lua_utils_v2
             {
                 MessageBox.Show($"{ex}", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+        }
+
+        private void LogsCreator()
+        {
+            if (saveLogsCheckBox.CheckState == CheckState.Checked)
+            {
+                if (!Directory.Exists(@".\logs\"))
+                {
+                    Directory.CreateDirectory(@".\logs\");
+                }
+
+                bool logsFileExist = true;
+                int iFil = 1;
+                while (logsFileExist)
+                {
+                    if (!File.Exists($@".\logs\logs-{iFil}.log"))
+                    {
+                        File.AppendAllText($@".\logs\logs-{iFil}.log", logsFileText);
+                        logsFileExist = false;
+                        break;
+                    }
+                    iFil++;
+                }
             }
         }
 
