@@ -280,9 +280,7 @@ namespace cuchi_lua_utils_v2
                                             totalLinesSkipped++;
                                             if (logsEnabled)
                                             {
-                                                Console.ForegroundColor = ConsoleColor.DarkYellow;
                                                 logsTextBox.Invoke(new Action(() => logsTextBox.Text += $"{currLine + 1}: skipped event (out of range). ({lines[currLine]})\n"));
-                                                Console.ResetColor();
                                             }
                                         }
                                         catch (Exception ex)
