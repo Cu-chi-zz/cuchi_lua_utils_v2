@@ -216,7 +216,7 @@ namespace cuchi_lua_utils_v2
                 foreach (string file in path)
                 {
                     progressBar.Invoke(new Action(() => progressBar.Value = filesCounter));
-                    double percent = filesCounter / path.Length * 100;
+                    double percent = (double)filesCounter / (double)path.Length * 100;
 
                     var currentFile = new FileInfo(file);
 
@@ -297,7 +297,6 @@ namespace cuchi_lua_utils_v2
                                     }
                                 }
                             }
-                            filesCounter++;
                         }
 
                         File.WriteAllLines(file, lines);
@@ -308,8 +307,13 @@ namespace cuchi_lua_utils_v2
                         }
                     }
                     progressBar.Invoke(new Action(() => progressBar.Refresh()));
-                    percentLabel.Invoke(new Action(() => percentLabel.Text = $"{Math.Round(percent, 2)}%"));
+                    percentLabel.Invoke(new Action(() =>
+                    {
+                        percentLabel.Text = $"{Math.Round(percent, 2)}%";
+                        percentLabel.Refresh();
+                    }));
                     logsTextBox.Invoke(new Action(() => logsTextBox.Refresh()));
+                    filesCounter++;
                 }
                 watchFolder.Stop();
 
