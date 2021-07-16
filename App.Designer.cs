@@ -97,6 +97,8 @@ namespace cuchi_lua_utils_v2
             // logsButton
             // 
             this.logsButton.AutoSize = true;
+            this.logsButton.Checked = true;
+            this.logsButton.CheckState = System.Windows.Forms.CheckState.Checked;
             this.logsButton.Location = new System.Drawing.Point(12, 407);
             this.logsButton.Name = "logsButton";
             this.logsButton.Size = new System.Drawing.Size(85, 17);
@@ -124,17 +126,15 @@ namespace cuchi_lua_utils_v2
             // 
             // percentLabel
             // 
-            this.percentLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.percentLabel.AutoSize = true;
             this.percentLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.percentLabel.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.percentLabel.Location = new System.Drawing.Point(760, 404);
+            this.percentLabel.Location = new System.Drawing.Point(715, 407);
             this.percentLabel.Name = "percentLabel";
-            this.percentLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.percentLabel.Size = new System.Drawing.Size(32, 20);
+            this.percentLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.percentLabel.Size = new System.Drawing.Size(77, 20);
             this.percentLabel.TabIndex = 8;
-            this.percentLabel.Text = "0%";
-            this.percentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.percentLabel.Text = "0.0%";
+            this.percentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // saveLogsCheckBox
             // 
@@ -164,7 +164,6 @@ namespace cuchi_lua_utils_v2
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "App";
             this.Text = "Cuchi Lua Utils V2";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

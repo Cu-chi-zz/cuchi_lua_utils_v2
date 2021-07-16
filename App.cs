@@ -23,10 +23,6 @@ namespace cuchi_lua_utils_v2
             InitializeComponent();
         }
 
-        private static void EventsReplacer()
-        {
-        }
-
         public static string Base64Encode(string plainText)
         {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
@@ -145,13 +141,9 @@ namespace cuchi_lua_utils_v2
             return false;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-        }
-
         private void startButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(pathToEdit))
+            if (string.IsNullOrEmpty(pathToEdit) && string.IsNullOrEmpty(pathTextBox.Text))
             {
                 MessageBox.Show("Please, select a folder to edit!", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -175,6 +167,8 @@ namespace cuchi_lua_utils_v2
         {
             try
             {
+                pathToEdit = pathTextBox.Text;
+
                 Stopwatch watchFolder = new Stopwatch();
                 watchFolder.Start();
 
@@ -216,7 +210,7 @@ namespace cuchi_lua_utils_v2
                 foreach (string file in path)
                 {
                     progressBar.Invoke(new Action(() => progressBar.Value = filesCounter));
-                    double percent = (double)filesCounter / (double)path.Length * 100;
+                    double percent = (double)filesCounter / (double)path.Length * 100.0;
 
                     var currentFile = new FileInfo(file);
 
@@ -336,11 +330,13 @@ namespace cuchi_lua_utils_v2
             catch (UnauthorizedAccessException ex)
             {
                 MessageBox.Show($"{ex}", "ERROR: UnauthorizedAccessException", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ResetOnNewStart();
                 return;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"{ex}", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ResetOnNewStart();
                 return;
             }
         }
@@ -397,5 +393,6 @@ namespace cuchi_lua_utils_v2
             logsTextBox.SelectionStart = logsTextBox.Text.Length;
             logsTextBox.ScrollToCaret();
         }
+
     }
 }
